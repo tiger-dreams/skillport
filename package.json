@@ -1,0 +1,38 @@
+{
+  "name": "skillport",
+  "version": "0.1.0",
+  "description": "Package manager for AI agent skills (Claude Code, AGENTS.md-compatible) — install, sync, and share skills across projects.",
+  "type": "module",
+  "bin": {
+    "skillport": "./src/cli.js"
+  },
+  "main": "./src/cli.js",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "agent-skills",
+    "ai-agents",
+    "cli",
+    "package-manager",
+    "llm-tools"
+  ],
+  "author": "tiger-dreams",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiger-dreams/skillport.git"
+  },
+  "homepage": "https://github.com/tiger-dreams/skillport#readme",
+  "bugs": {
+    "url": "https://github.com/tiger-dreams/skillport/issues"
+  },
+  "files": [
+    "src",
+    "registry/skills.json"
+  ]
+}

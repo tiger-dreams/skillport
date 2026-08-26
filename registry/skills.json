@@ -1,0 +1,20 @@
+[
+  {
+    "name": "conventional-commits",
+    "description": "Writes commit messages in Conventional Commits format from a staged diff.",
+    "tags": ["git", "commits", "workflow"],
+    "source": "tiger-dreams/skillport/examples/skills/conventional-commits"
+  },
+  {
+    "name": "changelog-from-git-log",
+    "description": "Generates a CHANGELOG.md section from git log between two refs, grouped by change type.",
+    "tags": ["git", "changelog", "release", "workflow"],
+    "source": "tiger-dreams/skillport/examples/skills/changelog-from-git-log"
+  },
+  {
+    "name": "readme-toc-generator",
+    "description": "Generates or updates a table of contents in a README.md from its own headers.",
+    "tags": ["markdown", "docs", "readme"],
+    "source": "tiger-dreams/skillport/examples/skills/readme-toc-generator"
+  }
+]
