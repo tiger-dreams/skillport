@@ -2,6 +2,7 @@
 
 **Keep one personal library of AI agent skills in sync across every project you work in.**
 
+[![CI](https://github.com/tiger-dreams/skillport/actions/workflows/ci.yml/badge.svg)](https://github.com/tiger-dreams/skillport/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/skillport.svg)](https://www.npmjs.com/package/skillport)
 [![license](https://img.shields.io/npm/l/skillport.svg)](https://github.com/tiger-dreams/skillport/blob/main/LICENSE)
 [![node](https://img.shields.io/node/v/skillport.svg)](https://www.npmjs.com/package/skillport)
