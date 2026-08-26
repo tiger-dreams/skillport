@@ -1,23 +1,24 @@
 # skillport
 
-**npm for your AI agent's skills.**
+**Keep one personal library of AI agent skills in sync across every project you work in.**
 
 [![npm version](https://img.shields.io/npm/v/skillport.svg)](https://www.npmjs.com/package/skillport)
 [![license](https://img.shields.io/npm/l/skillport.svg)](https://github.com/tiger-dreams/skillport/blob/main/LICENSE)
 [![node](https://img.shields.io/node/v/skillport.svg)](https://www.npmjs.com/package/skillport)
 
-`skillport` is a zero-dependency CLI for installing, sharing, and syncing [Agent Skills](#what-are-agent-skills) — the `SKILL.md` format used by Claude Code and compatible AI coding agents — across your projects.
+`skillport` is a zero-dependency CLI for maintaining a personal library of [Agent Skills](#what-are-agent-skills) — the `SKILL.md` format used by Claude Code and compatible AI coding agents — and keeping it **live-synced by symlink** across every local project you use it in, instead of copy-pasting a snapshot into each repo.
 
 ## Why
 
-Agent skills give a coding agent (Claude Code, and other tools adopting the same format) new, reusable capabilities: a directory with a `SKILL.md` file describing when and how to use it, plus supporting files. They're genuinely useful — but right now, sharing them is stuck in the copy-paste era:
+If you only ever install a skill once into one project, [`vercel-labs/skills`](https://github.com/vercel-labs/skills) already does that well — it's the standard `npx skills add owner/repo@skill` registry client, and skillport is not trying to replace it.
 
-- **No install step.** You find a good skill in someone else's repo and manually copy the folder into `.claude/skills/`.
-- **No versioning.** There's no way to pull in updates without diffing directories by hand.
-- **No discovery.** Skills are scattered across gists, repos, and Slack messages with no shared index.
-- **No sync.** If you maintain a personal skill library and use it across ten projects, updating one means updating ten.
+skillport exists for a narrower, different problem: **maintaining your own skill library across many local repos at once.** If you write or tweak a skill while working in project A, and you use that same skill in nine other projects, a one-time install leaves ten independent copies that silently drift the moment you edit any one of them.
 
-skillport treats skills like packages: install them from any GitHub repo, discover them through a shared registry, and keep them in sync with a symlink — the same workflow `npm` gave you for code, applied to the things that make your agent smarter.
+- **`skillport install`** fetches a skill once into a local global store (`~/.skillport/store`) — same idea as any installer.
+- **`skillport link`** symlinks it from that store into as many local projects as you want. Edit it in any linked project (or the store) and every other linked project sees the change immediately — no re-install, no diffing folders, no drift.
+- **`skillport search`** gives you a small, curated registry to discover skills by name — a lightweight complement to `skills.sh`, not a competitor to it.
+
+If you just need to grab one skill into one project, use `vercel-labs/skills`. If you maintain a personal skill library you reuse across many repos and want edits to propagate instead of drift, that's what skillport is for.
 
 ## What are Agent Skills?
 
@@ -58,6 +59,30 @@ Installed skills (.claude/skills):
 
   changelog-from-git-log   Generates a CHANGELOG.md section from git log between two refs, grouped by change type.
 ```
+
+## See it work
+
+The `link` command is the core differentiator over a one-time installer — here's the actual sequence, run for real in two temp project directories, unedited output included:
+
+```
+$ skillport init
+Initialized skillport project.
+  created .claude/skills/
+  created .skillport.json
+
+$ skillport install tiger-dreams/skillport/examples/skills/conventional-commits
+Fetched "conventional-commits" -> /Users/tiger/.skillport/store/tiger-dreams-skillport-conventional-commits
+Installed "conventional-commits" — Writes commit messages in Conventional Commits format from a staged diff. Use when the user asks for a commit message, wants help committing changes, or mentions "conventional commits".
+  -> .claude/skills/conventional-commits
+
+$ skillport link conventional-commits --to /tmp/skillport-demo-project-b
+Linked "conventional-commits" -> /tmp/skillport-demo-project-b/.claude/skills/conventional-commits
+
+$ ls -la /tmp/skillport-demo-project-b/.claude/skills/conventional-commits
+lrwxr-xr-x  1 tiger  wheel  73 Aug 27 01:01 /tmp/skillport-demo-project-b/.claude/skills/conventional-commits -> /private/tmp/skillport-demo-project-a/.claude/skills/conventional-commits
+```
+
+That last line is a real symlink (`l...->`), not a copy — edit `conventional-commits/SKILL.md` from either project and the other sees the change immediately, because they're the same file on disk.
 
 ## Commands
 
@@ -122,14 +147,14 @@ Symlinks an installed skill into another local project directory, so edits to th
 skillport link conventional-commits --to ~/code/other-project
 ```
 
-## Why not just copy-paste or git submodules?
+## Why not just copy-paste, git submodules, or vercel-labs/skills?
 
-Honestly, for a single skill you use once, copy-paste is fine — skillport isn't solving a problem you don't have yet. It starts paying off once you're managing more than a couple of skills across more than one project:
+Honestly, for a single skill you use once, `npx skills add` (from [vercel-labs/skills](https://github.com/vercel-labs/skills)) or plain copy-paste is fine — skillport isn't solving a problem you don't have yet. It starts paying off once you're maintaining your *own* skills across more than one project:
 
-- **Versioning.** Re-running `skillport install` pulls the latest version of a skill from its source. With copy-paste, you're manually diffing folders to see what changed.
-- **Discovery.** `skillport search` gives you one place to look instead of remembering which repo had that skill you liked.
-- **Sync.** `skillport link` keeps a personal skill library in sync across every project via symlinks — a plain copy silently drifts the moment you edit it in one place and forget the other nine.
-- **Git submodules** solve sync too, but at the cost of submodule ergonomics (detached HEADs, `--recurse-submodules`, nested repo state) for what's usually just a folder of markdown. skillport is a much lighter-weight tool for a much narrower job.
+- **vercel-labs/skills** installs a snapshot into one project at a time from its registry — it doesn't keep multiple local projects in sync with each other after that.
+- **Copy-paste** has the same problem: the moment you edit a skill in project A, projects B through J are stale and nobody notices.
+- **Git submodules** solve sync too, but at the cost of submodule ergonomics (detached HEADs, `--recurse-submodules`, nested repo state) for what's usually just a folder of markdown.
+- **`skillport link`** is just a symlink from a shared store into each project — edit it anywhere, every linked project sees it instantly, no re-install step, no drift, no submodule ceremony.
 
 What skillport deliberately *doesn't* do: dependency resolution, semver ranges, lockfiles, or a hosted package index. Skills are simple enough that they don't need it yet — the registry is just a curated JSON file, and installs pull straight from GitHub.
 
