@@ -26,14 +26,16 @@ An Agent Skill is a directory containing a `SKILL.md` file with YAML frontmatter
 
 ## Install
 
+Not yet on the npm registry — install straight from GitHub for now:
+
 ```bash
-npm install -g skillport
+npm install -g github:tiger-dreams/skillport
 ```
 
 Or run it without installing:
 
 ```bash
-npx skillport <command>
+npx github:tiger-dreams/skillport <command>
 ```
 
 ## Quick start
