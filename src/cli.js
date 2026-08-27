@@ -9,6 +9,7 @@ import { list } from './commands/list.js';
 import { remove } from './commands/remove.js';
 import { search } from './commands/search.js';
 import { link } from './commands/link.js';
+import { update } from './commands/update.js';
 import { storeInit, storePush, storePull, storeClone } from './commands/store.js';
 import { parseArgs } from './lib/args.js';
 
@@ -23,6 +24,7 @@ Usage:
   skillport remove <name>
   skillport search <query>
   skillport link <name> --to <path>
+  skillport update [name]
   skillport store init [--remote <git-url>]
   skillport store push [--message <text>]
   skillport store pull
@@ -35,6 +37,7 @@ Commands:
   remove <name>            Remove an installed skill from this project
   search <query>           Search the bundled skill registry
   link <name> --to <dir>   Symlink an installed skill into another project
+  update [name]            Re-fetch a skill (or all skills) from its original source
   store init               Turn ~/.skillport/store into a git repo (optionally set a remote)
   store push               Commit + push the store to its remote
   store pull               Pull the latest store from its remote
@@ -55,6 +58,8 @@ Examples:
   skillport install owner/repo --target .agents/skills
   skillport search pdf
   skillport link pdf --to ../other-project
+  skillport update pdf
+  skillport update
   skillport store init --remote git@github.com:you/my-skills.git
   skillport store push
   skillport store clone git@github.com:you/my-skills.git   # on a new machine
@@ -114,6 +119,11 @@ async function main() {
       const [name] = positional;
       if (!name) throw new Error('Usage: skillport remove <name>');
       await remove(name);
+      break;
+    }
+    case 'update': {
+      const [name] = positional;
+      await update(name, { target: typeof flags.target === 'string' ? flags.target : undefined });
       break;
     }
     case 'search': {

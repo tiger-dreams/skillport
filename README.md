@@ -118,6 +118,7 @@ skillport store pull   # on the other machine — linked projects see it immedia
 | `skillport remove <name>` | Remove a skill from the current project. |
 | `skillport search <query>` | Search the community registry by name, description, or tags. |
 | `skillport link <name> --to <path>` | Symlink an installed skill into another local project. |
+| `skillport update [name]` | Re-fetch a skill (or all skills) from the source it was originally installed from. |
 | `skillport store init [--remote <url>]` | Turn `~/.skillport/store` into a git repo (optionally set a remote). |
 | `skillport store push [--message <text>]` | Commit + push the store to its remote. |
 | `skillport store pull` | Pull the latest store from its remote. |
@@ -173,6 +174,15 @@ Symlinks an installed skill into another local project directory, so edits to th
 
 ```bash
 skillport link conventional-commits --to ~/code/other-project
+```
+
+### `skillport update [name]`
+
+Re-fetches a skill from wherever it was originally installed from — the source string is recorded when you `install`, so you don't have to remember or retype it. Refreshes both the global store and, if it's installed there, the current project's copy. With no name, updates every skill in the store that has a recorded source (skills fetched by a skillport version before this feature existed are skipped with a warning, not an error).
+
+```bash
+skillport update conventional-commits
+skillport update
 ```
 
 ## Why not just copy-paste, git submodules, or vercel-labs/skills?

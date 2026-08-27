@@ -7,6 +7,7 @@ import path from 'node:path';
 import { computeSafeName, parseSource } from '../lib/source.js';
 import { findSkillMdPath, readSkillMeta } from '../lib/skillmeta.js';
 import { readProjectConfig, resolveTarget, storeDirFor } from '../lib/paths.js';
+import { writeStoreMeta, STORE_META_EXCLUDE } from '../lib/storemeta.js';
 import { init } from './init.js';
 
 const execFileAsync = promisify(execFile);
@@ -82,6 +83,7 @@ export async function install(
 
     const storeDir = storeDirFor(safeName);
     await copyDir(sourceDir, storeDir, { exclude: ['.git'] });
+    await writeStoreMeta(storeDir, { source: sourceString });
     console.log(`Fetched "${meta.name}" -> ${storeDir}`);
 
     if (globalOnly) {
@@ -109,7 +111,7 @@ export async function install(
       // not installed yet — fine
     }
 
-    await copyDir(storeDir, installPath);
+    await copyDir(storeDir, installPath, { exclude: [STORE_META_EXCLUDE] });
 
     if (alreadyInstalled) {
       console.warn(`Warning: overwrote existing skill at ${path.relative(cwd, installPath)}`);
