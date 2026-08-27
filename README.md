@@ -3,9 +3,9 @@
 **Keep one personal library of AI agent skills in sync across every project — and every machine — you work on.**
 
 [![CI](https://github.com/tiger-dreams/skillport/actions/workflows/ci.yml/badge.svg)](https://github.com/tiger-dreams/skillport/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/skillport.svg)](https://www.npmjs.com/package/skillport)
-[![license](https://img.shields.io/npm/l/skillport.svg)](https://github.com/tiger-dreams/skillport/blob/main/LICENSE)
-[![node](https://img.shields.io/node/v/skillport.svg)](https://www.npmjs.com/package/skillport)
+[![npm version](https://img.shields.io/npm/v/@jeongpd/skillport.svg)](https://www.npmjs.com/package/@jeongpd/skillport)
+[![license](https://img.shields.io/npm/l/@jeongpd/skillport.svg)](https://github.com/tiger-dreams/skillport/blob/main/LICENSE)
+[![node](https://img.shields.io/node/v/@jeongpd/skillport.svg)](https://www.npmjs.com/package/@jeongpd/skillport)
 
 `skillport` is a zero-dependency CLI for maintaining a personal library of [Agent Skills](#what-are-agent-skills) — the `SKILL.md` format used by Claude Code and compatible AI coding agents — and keeping it **live-synced by symlink** across every local project you use it in, instead of copy-pasting a snapshot into each repo.
 
@@ -28,16 +28,22 @@ An Agent Skill is a directory containing a `SKILL.md` file with YAML frontmatter
 
 ## Install
 
-Not yet on the npm registry — install straight from GitHub for now:
-
 ```bash
-npm install -g github:tiger-dreams/skillport
+npm install -g @jeongpd/skillport
 ```
 
 Or run it without installing:
 
 ```bash
-npx github:tiger-dreams/skillport <command>
+npx @jeongpd/skillport <command>
+```
+
+(Published as `@jeongpd/skillport` — the unscoped `skillport` name was too similar to an existing unrelated package on npm's registry. The `skillport` command itself is unaffected either way.)
+
+Installing straight from GitHub also still works, if you'd rather not wait for npm:
+
+```bash
+npm install -g github:tiger-dreams/skillport
 ```
 
 ## Quick start
