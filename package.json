@@ -1,6 +1,6 @@
 {
   "name": "@jeongpd/skillport",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Keep a personal library of AI agent skills (Claude Code, AGENTS.md-compatible) live-synced by symlink across every project and machine.",
   "type": "module",
   "bin": {
