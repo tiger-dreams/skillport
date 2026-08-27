@@ -114,6 +114,13 @@ skillport store pull   # on the other machine — linked projects see it immedia
 
 `skillport link` resolves from the current project first, and falls back to the global store if the skill isn't installed locally — so this works right after a fresh `store clone`, before you've run `install` anywhere.
 
+## Where people use this
+
+- **A freelancer/consultant hopping between unrelated client repos** — your own commit-message style, your own report-generator skill, whatever you've built for yourself, available in every project without copy-pasting it in each time.
+- **Setting up a new laptop or a fresh dev VM** — `store clone` once, and every skill you've ever installed is there, ready to `link` into whatever you're about to work on.
+- **A small team sharing one skill library** — same mechanism, pointed at a shared repo instead of a personal one. See [`docs/team-skill-library.md`](./docs/team-skill-library.md) for setup, day-to-day flow, and how conflicts are handled (same as any git repo, because it is one).
+- **Onboarding a new team member** — their entire Claude Code skill setup is one `store clone` command instead of a "here's a folder, copy these in" doc.
+
 ## Commands
 
 | Command | Description |

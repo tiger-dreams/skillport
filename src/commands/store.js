@@ -99,7 +99,13 @@ export async function storePush({ message = 'sync skills' } = {}) {
     await execFileAsync('git', args, { cwd: STORE_DIR });
     console.log('Pushed.');
   } catch (err) {
-    const firstLine = String(err.message || err).split('\n')[0];
+    const stderr = String(err.stderr || err.message || err);
+    if (/\[rejected\]|fetch first|non-fast-forward/.test(stderr)) {
+      throw new Error(
+        'git push failed: the remote has changes you don\'t have locally (someone else pushed first) — run `skillport store pull`, then push again.'
+      );
+    }
+    const firstLine = stderr.split('\n')[0];
     throw new Error(`git push failed: ${firstLine} — did you set a remote with \`skillport store init --remote <url>\`?`);
   }
 }

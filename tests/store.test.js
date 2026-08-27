@@ -107,3 +107,35 @@ test('store clone refuses to clobber an existing non-empty store', async () => {
     await fs.rm(root, { recursive: true, force: true });
   }
 });
+
+test('store push gives a clear, targeted error when rejected by the remote (someone else pushed first), not a misleading "did you set a remote" message', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'skillport-store-conflict-'));
+  const bareRemote = path.join(root, 'remote.git');
+  const homeA = path.join(root, 'home-a');
+  const homeB = path.join(root, 'home-b');
+
+  try {
+    await execFileAsync('git', ['init', '--bare', bareRemote]);
+    await fs.mkdir(homeA, { recursive: true });
+    await fs.mkdir(homeB, { recursive: true });
+
+    await writeSkillFixture(path.join(homeA, '.skillport', 'store'), 'skill-x', 'v1');
+    await run(['store', 'init', '--remote', bareRemote], homeA);
+    await run(['store', 'push'], homeA);
+
+    await run(['store', 'clone', bareRemote], homeB);
+
+    // A pushes an update B hasn't pulled yet.
+    await writeSkillFixture(path.join(homeA, '.skillport', 'store'), 'skill-x', 'v2-from-A');
+    await run(['store', 'push'], homeA);
+
+    // B edits independently and tries to push without pulling first.
+    await writeSkillFixture(path.join(homeB, '.skillport', 'store'), 'skill-x', 'v2-from-B');
+    await assert.rejects(
+      run(['store', 'push'], homeB),
+      /someone else pushed first.*skillport store pull/s
+    );
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});
