@@ -4,7 +4,7 @@
   "description": "Keep a personal library of AI agent skills (Claude Code, AGENTS.md-compatible) live-synced by symlink across every project and machine.",
   "type": "module",
   "bin": {
-    "skillport": "./src/cli.js"
+    "skillport": "src/cli.js"
   },
   "main": "./src/cli.js",
   "scripts": {
