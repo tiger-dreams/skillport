@@ -2,6 +2,8 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
+import { readSkillMeta } from './skillmeta.js';
+
 export const HOME_DIR = os.homedir();
 export const STORE_DIR = path.join(HOME_DIR, '.skillport', 'store');
 export const CONFIG_FILENAME = '.skillport.json';
@@ -42,4 +44,25 @@ export async function resolveTarget(cwd = process.cwd(), overrideTarget) {
 
 export function storeDirFor(safeName) {
   return path.join(STORE_DIR, safeName);
+}
+
+/**
+ * Find a skill in the global store by its plain SKILL.md `name` (not the
+ * composite `owner-repo-name` directory name install() uses to avoid
+ * collisions). Returns the store subdirectory's absolute path, or null.
+ */
+export async function findInStore(name) {
+  let entries;
+  try {
+    entries = await fs.readdir(STORE_DIR, { withFileTypes: true });
+  } catch {
+    return null;
+  }
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const dir = path.join(STORE_DIR, entry.name);
+    const meta = await readSkillMeta(dir);
+    if (meta && meta.name === name) return dir;
+  }
+  return null;
 }

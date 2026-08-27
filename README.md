@@ -1,6 +1,6 @@
 # skillport
 
-**Keep one personal library of AI agent skills in sync across every project you work in.**
+**Keep one personal library of AI agent skills in sync across every project — and every machine — you work on.**
 
 [![CI](https://github.com/tiger-dreams/skillport/actions/workflows/ci.yml/badge.svg)](https://github.com/tiger-dreams/skillport/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/skillport.svg)](https://www.npmjs.com/package/skillport)
@@ -18,8 +18,9 @@ skillport exists for a narrower, different problem: **maintaining your own skill
 - **`skillport install`** fetches a skill once into a local global store (`~/.skillport/store`) — same idea as any installer.
 - **`skillport link`** symlinks it from that store into as many local projects as you want. Edit it in any linked project (or the store) and every other linked project sees the change immediately — no re-install, no diffing folders, no drift.
 - **`skillport search`** gives you a small, curated registry to discover skills by name — a lightweight complement to `skills.sh`, not a competitor to it.
+- **`skillport store`** pushes that same global store to a git remote, so a *second* machine can clone it and immediately `link` from it — no re-install, no re-fetching each skill from GitHub again. This is a real, currently-unmet gap: [Claude Code itself has an open feature request](https://github.com/anthropics/claude-code/issues/57678) for cross-machine skill/settings sync, and in the meantime people are wiring up chezmoi, iCloud symlinks, or cron+LaunchAgent jobs by hand. `skillport store` is that missing piece, scoped to skills specifically.
 
-If you just need to grab one skill into one project, use `vercel-labs/skills`. If you maintain a personal skill library you reuse across many repos and want edits to propagate instead of drift, that's what skillport is for.
+If you just need to grab one skill into one project, use `vercel-labs/skills`. If you maintain a personal skill library you reuse across many repos — or many machines — and want edits to propagate instead of drift, that's what skillport is for.
 
 ## What are Agent Skills?
 
@@ -87,6 +88,26 @@ lrwxr-xr-x  1 tiger  wheel  73 Aug 27 01:01 /tmp/skillport-demo-project-b/.claud
 
 That last line is a real symlink (`l...->`), not a copy — edit `conventional-commits/SKILL.md` from either project and the other sees the change immediately, because they're the same file on disk.
 
+## Sync across machines
+
+The same idea extends past one machine: push your global store to a git remote, and a second machine can clone it and start linking from it immediately — no re-installing each skill, no re-fetching from GitHub again.
+
+```bash
+# Machine A — turn your existing store into a git repo and push it
+skillport store init --remote git@github.com:you/my-skills.git
+skillport store push
+
+# Machine B — clone it, then link straight from the synced store
+skillport store clone git@github.com:you/my-skills.git
+skillport link conventional-commits --to ~/code/some-project
+
+# Later, after editing a skill on either machine
+skillport store push   # on the machine you edited on
+skillport store pull   # on the other machine — linked projects see it immediately
+```
+
+`skillport link` resolves from the current project first, and falls back to the global store if the skill isn't installed locally — so this works right after a fresh `store clone`, before you've run `install` anywhere.
+
 ## Commands
 
 | Command | Description |
@@ -97,6 +118,10 @@ That last line is a real symlink (`l...->`), not a copy — edit `conventional-c
 | `skillport remove <name>` | Remove a skill from the current project. |
 | `skillport search <query>` | Search the community registry by name, description, or tags. |
 | `skillport link <name> --to <path>` | Symlink an installed skill into another local project. |
+| `skillport store init [--remote <url>]` | Turn `~/.skillport/store` into a git repo (optionally set a remote). |
+| `skillport store push [--message <text>]` | Commit + push the store to its remote. |
+| `skillport store pull` | Pull the latest store from its remote. |
+| `skillport store clone <url>` | On a new machine, clone a previously-pushed store. |
 
 ### `skillport init`
 
